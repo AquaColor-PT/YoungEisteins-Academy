@@ -3,6 +3,9 @@ const SUPABASE_KEY = "sb_publishable_z8UxqPtegbbPujwBVAgSow_Js-Z2Wye";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// ======================
+// LOGIN
+// ======================
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -16,17 +19,36 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   console.log("LOGIN RESULT:", data, error);
 
-  alert("Login fired"); // 👈 test if JS is running
-
   if (error) {
     alert(error.message);
     return;
   }
 
   if (data.session) {
-    alert("Redirecting now...");
-    window.location.href = "dashboard.html";
+    alert("Login successful");
+    window.location.href = "https://aquacolor-pt.github.io/YoungEisteins-Academy/dashboard.html";
   } else {
     alert("No session created");
   }
 });
+
+
+// ======================
+// FORGOT PASSWORD
+// ======================
+async function forgotPassword() {
+  const email = prompt("Enter your email for password reset:");
+
+  if (!email) return;
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://aquacolor-pt.github.io/YoungEisteins-Academy/resetpassword.html"
+  });
+
+  if (error) {
+    alert("Error: " + error.message);
+    return;
+  }
+
+  alert("Password reset email sent. Check your inbox.");
+}
