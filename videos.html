@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Videos</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0a1a2f;
+      color: white;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #112b4a;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: #112b4a;
+      margin: 15px 0;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    a {
+      color: #d4a64a;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>📚 All Uploaded Videos (Test View)</h2>
+</header>
+
+<div class="container" id="videoList">
+  Loading videos...
+</div>
+
+<script>
+const SUPABASE_URL = "https://sjhnspvibjmckepnrefu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_z8UxqPtegbbPujwBVAgSow_Js-Z2Wye";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadVideos() {
+  const { data, error } = await supabaseClient
+    .from("videos")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const container = document.getElementById("videoList");
+  container.innerHTML = "";
+
+  if (error) {
+    container.innerHTML = "❌ Failed to load videos";
+    console.log(error);
+    return;
+  }
+
+  data.forEach(video => {
+    container.innerHTML += `
+      <div class="card">
+        <h3>${video.title}</h3>
+        <p>Subject: ${video.subject} | Grade: ${video.grade}</p>
+
+        <video controls>
+          <source src="${video.video_url}" type="video/mp4">
+        </video>
+
+        ${
+          video.notes_url
+            ? `<p><a href="${video.notes_url}" target="_blank">Download Notes</a></p>`
+            : ""
+        }
+      </div>
+    `;
+  });
+}
+
+loadVideos();
+</script>
+
+</body>
+</html>
