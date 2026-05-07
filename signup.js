@@ -50,6 +50,7 @@ form.addEventListener("submit", async (e) => {
     console.log(dbError);
   } else {
     alert("Signup successful!");
-    window.location.href = "login.html";
+
+    window.location.href = "https://aquacolor-pt.github.io/YoungEisteins-Academy/login.html";
   }
 });

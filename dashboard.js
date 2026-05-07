@@ -6,9 +6,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let allVideos = [];
 let studentGrade = "";
 
-/* ======================
-   GET STUDENT
-====================== */
+// 🔐 GET STUDENT (SAFE)
 async function getStudent() {
   const { data: sessionData } = await supabaseClient.auth.getSession();
 
@@ -26,15 +24,15 @@ async function getStudent() {
     .single();
 
   if (error || !data) {
-    console.log(error);
+    console.log("Student fetch error:", error);
+    document.getElementById("studentInfo").innerText =
+      "Student profile not found";
     return null;
   }
 
-  // 🔥 CLEAN GRADE (ROBUST FIX)
+  // 🧠 CLEAN GRADE (VERY IMPORTANT FIX)
   studentGrade = String(data.grade)
-    .toLowerCase()
-    .replace(/grade/g, "")
-    .replace(/[^0-9]/g, "")
+    .replace("Grade ", "")
     .trim();
 
   document.getElementById("studentInfo").innerText =
@@ -43,11 +41,10 @@ async function getStudent() {
   return data;
 }
 
-/* ======================
-   LOAD VIDEOS
-====================== */
+// 📂 LOAD ALL VIDEOS (NO FILTER FIRST)
 async function loadVideos() {
   const student = await getStudent();
+
   if (!student) return;
 
   const { data, error } = await supabaseClient
@@ -56,24 +53,21 @@ async function loadVideos() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.log(error);
+    console.log("Video load error:", error);
     return;
   }
 
-  console.log("ALL VIDEOS:", data);
+  console.log("ALL VIDEOS FROM DB:", data);
 
-  // 🔥 SAFE FILTER
-  allVideos = (data || []).filter(v => {
-    const g = String(v.grade).replace(/[^0-9]/g, "").trim();
-    return g === studentGrade;
-  });
+  // 🔥 FILTER MANUALLY (AVOIDS ALL SUPABASE ISSUES)
+  allVideos = (data || []).filter(v =>
+    String(v.grade).trim() === studentGrade
+  );
 
   renderVideos();
 }
 
-/* ======================
-   RENDER VIDEOS
-====================== */
+// 📺 RENDER VIDEOS
 function renderVideos() {
   const mathDiv = document.getElementById("math");
   const physicsDiv = document.getElementById("physics");
@@ -82,15 +76,12 @@ function renderVideos() {
   physicsDiv.innerHTML = "<h3>🔬 Physical Sciences Videos</h3>";
 
   if (!allVideos.length) {
-    mathDiv.innerHTML += "<p>No videos for your grade.</p>";
+    mathDiv.innerHTML += "<p>No videos available for your grade.</p>";
     return;
   }
 
   allVideos.forEach(video => {
-
-    const subject = String(video.subject || "")
-      .toLowerCase()
-      .trim();
+    const subject = (video.subject || "").toLowerCase();
 
     const card = `
       <div class="video-card">
@@ -106,24 +97,22 @@ function renderVideos() {
             : ""
         }
 
-        <p style="font-size:12px; opacity:0.7">
-          Subject: ${video.subject} | Grade: ${video.grade}
-        </p>
+        <p><small>Subject: ${video.subject} | Grade: ${video.grade}</small></p>
       </div>
     `;
 
-    // 🔥 SAFE SUBJECT ROUTING
+    // 🔥 SAFE SUBJECT CHECK
     if (subject.includes("math")) {
       mathDiv.innerHTML += card;
-    } else if (subject.includes("phys")) {
+    }
+
+    if (subject.includes("phys")) {
       physicsDiv.innerHTML += card;
     }
   });
 }
 
-/* ======================
-   TAB SWITCH
-====================== */
+// 📌 TAB SWITCH
 function show(section) {
   document.getElementById("math").classList.add("hidden");
   document.getElementById("physics").classList.add("hidden");
@@ -131,7 +120,5 @@ function show(section) {
   document.getElementById(section).classList.remove("hidden");
 }
 
-/* ======================
-   START
-====================== */
+// 🚀 START
 loadVideos();

@@ -17,6 +17,20 @@
   font-weight: bold;
   transition: all 0.3s ease;
 }
+#teamsInfo a {
+  display: inline-block;
+  margin: 10px 5px;
+  padding: 10px 15px;
+  background: #d4a64a;
+  color: black;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+#teamsInfo a:hover {
+  background: #e6b85c;
+}
 
 /* Hover effect */
 .signup-btn:hover {
@@ -221,7 +235,12 @@
   <div class="hero-text">
     <h2>Turning confusion <span>into clarity</span></h2>
     <p>Helping Grade 11 & 12 students master Mathematics and Physical Sciences.</p>
-    <p><strong>Online via Microsoft Teams</strong></p>
+   
+  <div class="card">
+  <h2>💻 Online via Microsoft Teams</h2>
+  <div id="teamsInfo">Loading class info...</div>
+
+</div>
   <div class="auth-buttons">
   <a href="signup.html" class="signup-btn">Sign Up</a>
   <a href="login.html" class="login-btn">Sign In</a>
@@ -234,10 +253,25 @@
 <section class="section">
 
   <div class="card">
-    <h2>Schedule</h2>
-    <p><span class="highlight">Grade 11:</span> Intro to Euclidean Geometry<br>17:00 – 19:00</p>
-    <p><span class="highlight">Grade 12:</span> Euclidean Geometry Revision<br>19:30 – 21:30</p>
-  </div>
+  <h2>Schedule</h2>
+
+  <p>
+    <span class="highlight">Grade 11:</span><br>
+    <span id="g11Time">Loading...</span><br>
+    <span id="g11Topic"></span>
+  </p>
+
+  <br>
+
+  <p>
+    <span class="highlight">Grade 12:</span><br>
+    <span id="g12Time">Loading...</span><br>
+    <span id="g12Topic"></span>
+  </p>
+</div>
+
+  <div id="teamsInfo">Loading class info...</div>
+</div>
 
   <div class="card">
     <h2>Pricing</h2>
