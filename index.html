@@ -1,219 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Young Einsteins Academy</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-  .signup-btn {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 12px 20px;
-  background: #d4a64a;
-  color: black;
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-#teamsInfo a {
-  display: inline-block;
-  margin: 10px 5px;
-  padding: 10px 15px;
-  background: #d4a64a;
-  color: black;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: bold;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Young Einsteins Academy</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:#0a1a2f;
+  color:white;
+  overflow-x:hidden;
 }
 
-#teamsInfo a:hover {
-  background: #e6b85c;
+/* FLOATING SYMBOLS */
+.symbols span{
+  position:absolute;
+  font-size:20px;
+  color:rgba(212,166,74,0.4);
+  animation:float 10s linear infinite;
 }
 
-/* Hover effect */
-.signup-btn:hover {
-  background: #e6b85c;
-  transform: scale(1.05);
+@keyframes float{
+  0%{
+    transform:translateY(100vh) rotate(0deg);
+    opacity:0;
+  }
+
+  50%{
+    opacity:1;
+  }
+
+  100%{
+    transform:translateY(-10vh) rotate(360deg);
+    opacity:0;
+  }
 }
 
-/* Click effect */
-.signup-btn:active {
-  transform: scale(0.95);
+/* HEADER */
+header{
+  background:linear-gradient(to bottom,#081426 60%,#d4a64a 40%);
+  text-align:center;
+  padding:40px 20px 60px;
+  position:relative;
 }
 
-.auth-buttons {
-  margin-top: 15px;
-  display: flex;
-  gap: 10px;
+.logo{
+  width:220px;
+  margin-bottom:10px;
 }
 
-/* LOGIN BUTTON (white) */
-.login-btn {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 12px 20px;
-  background: white;
-  color: #0a1a2f;
-  text-decoration: none;
-  border-radius: 10px;
-  font-weight: bold;
-  transition: all 0.3s ease;
+header h1{
+  font-size:2.5rem;
+  margin:10px 0 0;
 }
 
-.login-btn:hover {
-  background: #ddd;
-  transform: scale(1.05);
+header p{
+  color:#ccc;
+  margin-top:5px;
 }
 
-.login-btn:active {
-  transform: scale(0.95);
+/* HERO */
+.hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  padding:40px 20px;
+  max-width:1100px;
+  margin:auto;
 }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #0a1a2f;
-      color: white;
-      overflow-x: hidden;
-    }
 
-    .symbols span {
-      position: absolute;
-      font-size: 20px;
-      color: rgba(212,166,74,0.4);
-      animation: float 10s linear infinite;
-    }
+.hero-text{
+  max-width:500px;
+}
 
-    @keyframes float {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
+.hero-text h2{
+  font-size:2.2rem;
+}
 
-    header {
-      background: linear-gradient(to bottom, #081426 60%, #d4a64a 40%);
-      text-align: center;
-      padding: 40px 20px 60px;
-      position: relative;
-    }
+.hero-text span{
+  color:#d4a64a;
+}
 
-    .logo {
-      width: 220px;
-      margin-bottom: 10px;
-    }
+.hero img{
+  width:300px;
+  border-radius:20px;
+  box-shadow:0 0 40px rgba(212,166,74,0.5);
+}
 
-    header h1 {
-      font-size: 2.5rem;
-      margin: 10px 0 0;
-    }
+/* SECTION */
+.section{
+  padding:40px 20px;
+  max-width:1000px;
+  margin:auto;
+}
 
-    header p {
-      color: #ccc;
-      margin-top: 5px;
-    }
+/* CARD */
+.card{
+  background:#112b4a;
+  padding:25px;
+  border-radius:15px;
+  margin-bottom:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.5);
+  transform:translateY(30px);
+  opacity:0;
+  transition:all 0.6s ease;
+}
 
-    .hero {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      padding: 40px 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
+.card.visible{
+  transform:translateY(0);
+  opacity:1;
+}
 
-    .hero-text {
-      max-width: 500px;
-    }
+.highlight{
+  color:#d4a64a;
+  font-weight:bold;
+}
 
-    .hero-text h2 {
-      font-size: 2.2rem;
-    }
+/* CTA */
+.cta{
+  background:#d4a64a;
+  color:black;
+  text-align:center;
+  padding:30px;
+  border-radius:15px;
+  animation:pulse 2s infinite;
+}
 
-    .hero-text span {
-      color: #d4a64a;
-    }
+@keyframes pulse{
+  0%{
+    transform:scale(1);
+  }
 
-    .hero img {
-      width: 300px;
-      border-radius: 20px;
-      box-shadow: 0 0 40px rgba(212,166,74,0.5);
-    }
+  50%{
+    transform:scale(1.03);
+  }
 
-    .section {
-      padding: 40px 20px;
-      max-width: 1000px;
-      margin: auto;
-    }
+  100%{
+    transform:scale(1);
+  }
+}
 
-    .card {
-      background: #112b4a;
-      padding: 25px;
-      border-radius: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      transform: translateY(30px);
-      opacity: 0;
-      transition: all 0.6s ease;
-    }
+/* BUTTONS */
+.auth-buttons{
+  margin-top:15px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
-    .card.visible {
-      transform: translateY(0);
-      opacity: 1;
-    }
+.signup-btn,
+.login-btn{
+  display:inline-block;
+  margin-top:15px;
+  padding:12px 20px;
+  text-decoration:none;
+  border-radius:10px;
+  font-weight:bold;
+  transition:all 0.3s ease;
+}
 
-    .highlight {
-      color: #d4a64a;
-      font-weight: bold;
-    }
+.signup-btn{
+  background:#d4a64a;
+  color:black;
+}
 
-    .cta {
-      background: #d4a64a;
-      color: black;
-      text-align: center;
-      padding: 30px;
-      border-radius: 15px;
-      animation: pulse 2s infinite;
-    }
+.signup-btn:hover{
+  background:#e6b85c;
+  transform:scale(1.05);
+}
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
+.login-btn{
+  background:white;
+  color:#0a1a2f;
+}
 
-    .whatsapp {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #25D366;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
+.login-btn:hover{
+  background:#ddd;
+  transform:scale(1.05);
+}
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #aaa;
-    }
+.signup-btn:active,
+.login-btn:active{
+  transform:scale(0.95);
+}
 
-    @media (max-width: 768px) {
-      .hero {
-        flex-direction: column;
-        text-align: center;
-      }
+/* TEAMS BUTTONS */
+#teamsInfo a{
+  display:inline-block;
+  margin:10px 5px;
+  padding:10px 15px;
+  background:#d4a64a;
+  color:black;
+  text-decoration:none;
+  border-radius:8px;
+  font-weight:bold;
+}
 
-      .hero img {
-        margin-top: 20px;
-      }
-    }
-  </style>
+#teamsInfo a:hover{
+  background:#e6b85c;
+}
+
+/* WHATSAPP */
+.whatsapp{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#25D366;
+  color:white;
+  padding:15px 20px;
+  border-radius:50px;
+  text-decoration:none;
+  font-weight:bold;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:20px;
+  color:#aaa;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+  .hero{
+    flex-direction:column;
+    text-align:center;
+  }
+
+  .hero img{
+    margin-top:20px;
+    width:90%;
+    max-width:300px;
+  }
+
+  .auth-buttons{
+    justify-content:center;
+  }
+
+}
+
+</style>
 </head>
+
 <body>
 
 <div class="symbols">
@@ -226,71 +263,114 @@
 </div>
 
 <header>
+
   <img src="logo.png" class="logo" alt="logo">
+
   <h1>Young Einsteins Academy</h1>
+
   <p>Turning confusion into clarity</p>
+
 </header>
 
 <section class="hero">
-  <div class="hero-text">
-    <h2>Turning confusion <span>into clarity</span></h2>
-    <p>Helping Grade 11 & 12 students master Mathematics and Physical Sciences.</p>
-   
-  <div class="card">
-  <h2>💻 Online via Microsoft Teams</h2>
-  <div id="teamsInfo">Loading class info...</div>
 
-</div>
-  <div class="auth-buttons">
-  <a href="signup.html" class="signup-btn">Sign Up</a>
-  <a href="login.html" class="login-btn">Sign In</a>
-</div>
+  <div class="hero-text">
+
+    <h2>
+      Turning confusion <span>into clarity</span>
+    </h2>
+
+    <p>
+      Helping Grade 11 & 12 students master Mathematics and Physical Sciences.
+    </p>
+
+    <div class="card">
+
+      <h2>💻 Online via Microsoft Teams</h2>
+
+      <div id="teamsInfo">
+        Loading class info...
+      </div>
+
+    </div>
+
+    <div class="auth-buttons">
+
+      <a href="signup.html" class="signup-btn">
+        Sign Up
+      </a>
+
+      <a href="login.html" class="login-btn">
+        Sign In
+      </a>
+
+    </div>
+
   </div>
 
   <img src="tutor.png" alt="Tutor">
+
 </section>
 
 <section class="section">
 
   <div class="card">
-  <h2>Schedule</h2>
 
-  <p>
-    <span class="highlight">Grade 11:</span><br>
-    <span id="g11Time">Loading...</span><br>
-    <span id="g11Topic"></span>
-  </p>
+    <h2>Schedule</h2>
 
-  <br>
+    <p>
+      <span class="highlight">Grade 11:</span><br>
 
-  <p>
-    <span class="highlight">Grade 12:</span><br>
-    <span id="g12Time">Loading...</span><br>
-    <span id="g12Topic"></span>
-  </p>
-</div>
+      <span id="g11Time">Loading...</span><br>
 
-  <div id="teamsInfo">Loading class info...</div>
-</div>
+      <span id="g11Topic"></span>
+    </p>
+
+    <br>
+
+    <p>
+      <span class="highlight">Grade 12:</span><br>
+
+      <span id="g12Time">Loading...</span><br>
+
+      <span id="g12Topic"></span>
+    </p>
+
+  </div>
 
   <div class="card">
+
     <h2>Pricing</h2>
+
     <p>Group Classes: R150/month</p>
+
     <p>1-on-1 Online: R150/hour</p>
+
     <p>1-on-1 Face-to-Face: R200/hour</p>
+
   </div>
 
   <div class="cta">
+
     <h2>Limited spots available!</h2>
+
     <p>Secure your place today</p>
-    <p>email: tsimbinimark@gmail.com</p>
+
+    <p>Email: tsimbinimark@gmail.com</p>
+
     <p>Call/Text: +27 648696744</p>
-    
+
   </div>
 
 </section>
 
-<a class="whatsapp" href="https://wa.me/27648696744" target="_blank">Chat on WhatsApp</a>
+<a class="whatsapp"
+href="https://wa.me/27648696744"
+target="_blank">
+
+  Chat on WhatsApp
+
+</a>
 
 <footer>
   © 2026 Young Einsteins Academy

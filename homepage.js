@@ -1,55 +1,49 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // CARD ANIMATION (KEEP SAFE)
-  // =========================
-  const cards = document.querySelectorAll('.card');
+  alert("JS is working");
 
-  const observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          obs.unobserve(entry.target);
-        }
-      });
-    },
-    {
-      threshold: 0.15,
-      rootMargin: "0px 0px -50px 0px"
-    }
-  );
+  const cards = document.querySelectorAll(".card");
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
 
   cards.forEach(card => observer.observe(card));
 
-  // Load homepage content
   loadHomeContent();
 });
 
-
-// =========================
-// SUPABASE SETUP
-// =========================
 const SUPABASE_URL = "https://sjhnspvibjmckepnrefu.supabase.co";
 const SUPABASE_KEY = "sb_publishable_z8UxqPtegbbPujwBVAgSow_Js-Z2Wye";
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-
-// =========================
-// LOAD HOME CONTENT
-// =========================async function loadHomeContent() {
+async function loadHomeContent() {
 
   const box = document.getElementById("teamsInfo");
-  const topicBox = document.querySelector(".hero-text h2");
 
-  const scheduleCards = document.querySelectorAll(".card");
+  const g11Topic = document.getElementById("g11Topic");
+  const g11Time = document.getElementById("g11Time");
 
-  const { data, error } = await supabase
+  const g12Topic = document.getElementById("g12Topic");
+  const g12Time = document.getElementById("g12Time");
+
+  const { data, error } = await supabaseClient
     .from("home_content")
     .select("*")
     .order("id", { ascending: false })
     .limit(1);
+
+  console.log("DATA:", data);
+  console.log("ERROR:", error);
 
   if (error || !data || data.length === 0) {
     if (box) box.innerHTML = "No class available yet.";
@@ -58,66 +52,64 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const item = data[0];
 
-  console.log("HOME DATA:", item);
+if (box) {
 
-  // =========================
-  // TOPIC (SAFE UPDATE ONLY)
-  // =========================
-  if (topicBox && item.class_topic) {
-    topicBox.innerHTML = `
-      ${item.class_topic} <span>Online via Microsoft Teams</span>
-    `;
+  box.innerHTML = "";
+
+  // JOIN CLASS BUTTON
+  if (item.class_link) {
+
+    const a = document.createElement("a");
+
+    a.href = item.class_link;
+    a.target = "_blank";
+    a.textContent = "▶ Join Class";
+
+    box.appendChild(a);
   }
 
-  // =========================
-  // LINKS (DO NOT REMOVE CARD)
-  // =========================
-  if (box) {
-    box.innerHTML = "";
+  // DOWNLOAD TEAMS BUTTON
+  const downloadBtn = document.createElement("a");
 
-    if (item.class_link) {
-      const a1 = document.createElement("a");
-      a1.href = item.class_link;
-      a1.target = "_blank";
-      a1.textContent = "▶ Join Class";
-      box.appendChild(a1);
+  downloadBtn.href = "#";
+  downloadBtn.textContent = "⬇ Download Teams";
+  downloadBtn.target = "_blank";
+
+  downloadBtn.onclick = function (e) {
+
+    e.preventDefault();
+
+    const userAgent = navigator.userAgent.toLowerCase();
+
+    // Android
+    if (userAgent.includes("android")) {
+
+      window.location.href =
+        "https://play.google.com/store/apps/details?id=com.microsoft.teams";
+
+    // iPhone / iPad
+    } else if (
+      userAgent.includes("iphone") ||
+      userAgent.includes("ipad")
+    ) {
+
+      window.location.href =
+        "https://apps.apple.com/app/microsoft-teams/id1113153706";
+
+    // Desktop
+    } else {
+
+      window.location.href =
+        "https://www.microsoft.com/microsoft-teams/download-app";
     }
+  };
 
-    if (item.teams_download) {
-      const a2 = document.createElement("a");
-      a2.href = item.teams_download;
-      a2.target = "_blank";
-      a2.textContent = "⬇ Download Teams";
-      box.appendChild(a2);
-    }
-  }
+  box.appendChild(downloadBtn);
+}
 
-  // =========================
-  // SCHEDULE (UPDATE ONLY TEXT INSIDE CARD)
-  // =========================
-  if (scheduleCards.length > 0) {
+  if (g11Topic) g11Topic.textContent = item.grade11_topic || "No topic";
+  if (g11Time) g11Time.textContent = `${item.grade11_start || "--"} - ${item.grade11_end || "--"}`;
 
-    const scheduleCard = scheduleCards[0];
-
-    const g11 = item.grade11_topic || "No topic";
-    const g12 = item.grade12_topic || "No topic";
-
-    const g11Time = `${item.grade11_start || "--"} - ${item.grade11_end || "--"}`;
-    const g12Time = `${item.grade12_start || "--"} - ${item.grade12_end || "--"}`;
-
-    scheduleCard.innerHTML = `
-      <h2>Schedule</h2>
-
-      <p>
-        <span class="highlight">Grade 11:</span><br>
-        ${g11}<br>
-        ${g11Time}
-      </p>
-
-      <p>
-        <span class="highlight">Grade 12:</span><br>
-        ${g12}<br>
-        ${g12Time}
-      </p>
-    `;
-  }
+  if (g12Topic) g12Topic.textContent = item.grade12_topic || "No topic";
+  if (g12Time) g12Time.textContent = `${item.grade12_start || "--"} - ${item.grade12_end || "--"}`;
+}
