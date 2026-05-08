@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  alert("JS is working");
+
 
   const cards = document.querySelectorAll(".card");
 
